@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no">
+        <title>Forkalicious</title>
+        <script>
+            var forkalicious = {
+                length_in_sync: 5,
+                waitSomeTime: num => new Promise( resolve => setTimeout( resolve, num ) ),
+                prefix_to_use: !!Math.floor( Math.random() * 2 ) ? "bip110" : "ursf110",
+                bip110_blocks: {},
+                ursf110_blocks: {},
+                displayBlockchain: () => {
+                    $( '.pro_length' ).innerText = Object.keys( forkalicious.bip110_blocks ).length;
+                    $( '.anti_length' ).innerText = Object.keys( forkalicious.ursf110_blocks ).length;
+                    var p_option = $( '.char_btn_clicked' ).innerText.toLowerCase();
+                    if ( p_option === "alice" ) {
+                        if ( Object.keys( forkalicious.bip110_blocks ).length > Object.keys( forkalicious.ursf110_blocks ).length ) forkalicious.prefix_to_use = "bip110";
+                        if ( Object.keys( forkalicious.ursf110_blocks ).length > Object.keys( forkalicious.bip110_blocks ).length ) forkalicious.prefix_to_use = "ursf110";
+                        var chain = forkalicious.prefix_to_use + "_blocks";
+                    }
+                    if ( p_option === "bob" ) var chain = "bip110_blocks";
+                    if ( p_option === "carol" ) var chain = "ursf110_blocks";
+                    var blocknum = Object.keys( forkalicious[ chain ] ).length;
+                    var value = $( '.bip110_slider' ).value;
+                    var blocks = [];
+                    Object.keys( forkalicious[ chain ] ).forEach( blocknum => {
+                        var blocktype = forkalicious[ chain ][ blocknum ];
+                        var blockheight = Number( blocknum ) + 961632 - forkalicious.length_in_sync;
+                        var div = document.createElement( "div" );
+                        if ( blocktype === "pro_bip110" ) var bcolor = "#47c412";
+                        else var bcolor = "#ff3f3f";
+                        div.innerHTML = `
+                            <div class="block_inner" style="background-color: ${bcolor};">${blockheight}</div>
+                        `;
+                        div.classList.add( "block" );
+                        blocks.push( div );
+                    });
+                    $( '.blockchain' ).innerHTML = ``;
+                    blocks.forEach( div => $( '.blockchain' ).append( div ) );
+                },
+            }
+        </script>
+        <style>
+            * {
+                box-sizing: border-box;
+                font-size: 1.15rem;
+                font-family: Arial, sans-serif;
+            }
+            html {
+                max-width: 800px;
+                padding: 3rem 1rem;
+                margin: auto;
+                line-height: 1.25;
+                padding: 0;
+            }
+            body {
+                margin: 3rem 1rem;
+                word-wrap: break-word;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            input {
+                line-height: 1.25;
+                width: 100%;
+                height: 1.8rem;
+                font-size: 1.15rem;
+                border: 1px solid grey;
+            }
+            .hidden {
+                display: none !important;
+            }
+            hr {
+                margin-top: 1rem;
+                margin-bottom: 0;
+            }
+            .characters {
+                text-align: center;
+            }
+            .character {
+                text-align: center;
+                display: inline-block;
+                margin: .5rem;
+                width: 100%;
+                max-width: 12rem;
+                border: 1px solid black;
+                border-radius: 1rem;
+                padding: 1rem;
+                vertical-align: top;
+            }
+            .character_nym {
+                text-decoration: underline;
+            }
+            .character_img {
+                margin: auto;
+                width: 10rem;
+                aspect-ratio: 1 / 1;
+                background-size: cover;
+                background-position: 50% 20%;
+                background-repeat: no-repeat;
+            }
+            .bold {
+                font-weight: bold;
+            }
+            .radio_div {
+                display: flex;
+                align-items: center;
+            }
+            input[type="radio"] {
+                background-color: blue;
+                width: auto;
+                margin-top: .5rem;
+                margin-right: .5rem;
+            }
+            .char_btn {
+                background-color: white; /* A nice blue color */
+                border: 1px solid black;
+                padding: 0 1rem;
+                text-decoration: none;
+                display: inline-block;
+                cursor: pointer;
+                box-shadow: 0 5px;
+            }
+            .char_btn.alice {
+                border-radius: 50% 0 0 50%;
+                border-right: 0;
+            }
+            .char_btn.bob {
+            }
+            .char_btn.carol {
+                border-left: 0;
+                border-radius: 0 50% 50% 0;
+            }
+            .char_btn_clicked {
+                transform: translateY( 2px );
+                box-shadow: 0 3px;
+            }
+            .blockchain_div {
+                display: inline-block;
+                border: 1px solid black;
+                padding: 1rem;
+                border-radius: 1rem;
+                margin: .5rem;
+                width: 100%;
+            }
+            .block {
+                display: inline-block;
+                height: 4.5rem;
+                width: 4.5rem;
+                margin: 1.5rem;
+                cursor: pointer;
+            }
+            .block_inner {
+                border: 1px solid black;
+                height: 4.5rem;
+                width: 4.5rem;
+                line-height: 4.5rem;
+                text-align: center;
+                font-size: 80%;
+            }
+            @media screen and (max-width: 600px) {
+            }
+        </style>
+        <script>
+            var $ = document.querySelector.bind( document );
+            var $$ = document.querySelectorAll.bind( document );
+            var url_params = new URLSearchParams( window.location.search );
+            var url_keys = url_params.keys();
+            var $_GET = {}
+            for ( var key of url_keys ) $_GET[ key ] = url_params.get( key );
+            var hash_arr = window.location.href.substring( window.location.href.indexOf( "#" ) ).split( "#" );
+            hash_arr.splice( 0, 1 );
+            var $_HASH = {}
+            hash_arr.forEach( item => {
+                var vals = item.split( "=" );
+                $_HASH[ vals[ 0 ] ] = vals[ 1 ];
+            });
+        </script>
+    </head>
+    <body>
+        <div class="home_page">
+            <h1>Forkalicious</h1>
+            <p>Visualize possible outcomes of a contentious BIP110 soft fork</p>
+            <hr>
+            <h2>Characters</h2>
+            <div class="characters">
+                <div class="character">
+                    <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Anime_girl_publicdomainq.png/250px-Anime_girl_publicdomainq.png' );"></div>
+                    <div class="character_nym bold">Alice</div>
+                    <div class="character_bio">Alice's bitcoin node <span class="bold">ignores</span> the BIP110 soft fork</div>
+                </div>
+                <div class="character">
+                    <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/El_Sato_Manga_kid_head_%281%29.svg/250px-El_Sato_Manga_kid_head_%281%29.svg.png' );"></div>
+                    <div class="character_nym bold">Bob</div>
+                    <div class="character_bio">Bob's bitcoin node <span class="bold">enforces</span> the BIP110 soft fork</div>
+                </div>
+                <div class="character">
+                    <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Anime_girl_portrait.jpg/250px-Anime_girl_portrait.jpg' );"></div>
+                    <div class="character_nym bold">Carol</div>
+                    <div class="character_bio">Carol's bitcoin node <span class="bold">rejects</span> the BIP110 soft fork</div>
+                </div>
+            </div>
+            <hr>
+            <h2>Scenario</h2>
+            <div class="scenario">
+                <p>Please set the BIP110 hashrate:</p>
+                <p>BIP110 hashrate: <span class="bip110_hashrate">0</span>%</p>
+                <input class="bip110_slider" type="range" min="1" max="100" value="50">
+            </div>
+            <hr>
+            <h2>Outcome summary</h2>
+            <div class="outcome_summary"></div>
+            <hr>
+            <h2>Graphical depiction</h2>
+            <p>Assume we begin 5 blocks before blockheight 961,632 -- which is the first block of the "mandatory signaling period" for BIP110, and which is expected in early August</p>
+            <p>Length of pro_bip110 chain: <span class="pro_length">0</span></p>
+            <p>Length of anti_bip110 chain: <span class="anti_length">0</span></p>
+            <p>Select a character to see things play out from their perspective:</p>
+            <p><button class="char_btn alice">Alice</button><button class="char_btn bob">Bob</button><button class="char_btn carol">Carol</button></p>
+            <p><button class="make_block">Generate block</button> <button class="reset_chain">Reset chain</button></p>
+            <div class="graphical_depiction"></div>
+            <hr>
+            <script>
+                //allow user to select hashrate
+                $( '.bip110_hashrate' ).innerText = '25';
+                $( '.bip110_slider' ).value = 25;
+                $( '.bip110_slider' ).oninput = () => {
+                    var value = Number( $( '.bip110_slider' ).value );
+                    $( '.bip110_hashrate' ).innerText = value;
+                    sliderChanged();
+                }
+
+                //prepare summary for whichever scenario is selected
+                var sliderChanged = () => {
+                    var value = $( '.bip110_slider' ).value;
+                    var html = ``;
+                    if ( value >= 40 && value < 60 ) {
+                        var html = `
+                            <ul>
+                                <li>
+                                    People ignoring the debate (like <span class="bold">Alice</span>) notice that blocks become noticeably slower for a while, and large chain reorgs happen until the dust settles one way or the other. Bitcoin's blockchain becomes unpredictable, and its value in the market might fall as a result.
+                                </li>
+                                <li>
+                                    BIP110 people (like <span class="bold">Bob</span>) try to convince more miners to join their side so that they ultimately "win," become the true bitcoin blockchain, and don't end up on a minority fork
+                                </li>
+                                <li>
+                                    URSF110 people (like <span class="bold">Carol</span>) try to convince more miners to join their side so that they ultimately "win," become the true bitcoin blockchain, and don't end up on a minority fork
+                                </li>
+                            </ul>
+                        `;
+                    } else if ( value < 40 ) {
+                        var html = `
+                            <ul>
+                                <li>
+                                    People ignoring the debate (like <span class="bold">Alice</span>) notice nothing, except that blocks could become noticeably slower for a while.
+                                </li>
+                                <li>
+                                    BIP110 people (like <span class="bold">Bob</span>) end up on a minority fork.
+                                </li>
+                                <li>
+                                    URSF110 people (like <span class="bold">Carol</span>) celebrate their ultimate victory (but otherwise notice nothing).
+                                </li>
+                            </ul>
+                        `;
+                    } else if ( value >= 60 ) {
+                        var html = `
+                            <ul>
+                                <li>
+                                    People ignoring the debate (like <span class="bold">Alice</span>) notice nothing except perhaps these things: blocks could become noticeably slower for a while; inscriptions of the current type should stop entering the blockchain; a new format for inscriptions might come out so that they start working again; and some custom-made nunchuk wallets might get their money frozen if they use certain functions of miniscript.
+                                </li>
+                                <li>
+                                    BIP110 people (like <span class="bold">Bob</span>) celebrate their ultimate victory.
+                                </li>
+                                <li>
+                                    URSF110 people (like <span class="bold">Carol</span>) end up on a minority fork.
+                                </li>
+                            </ul>
+                        `;
+                    }
+                    if ( Object.keys( forkalicious.bip110_blocks ).length || Object.keys( forkalicious.ursf110_blocks ).length ) {
+                        var html = `
+                            <p>You have discovered something tricky! If hashrate starts out *one way* in early August, but then *changes* to be *the other way* (this is called a "flippening"), we could see a significant wipeout of much blockchain history.
+                            <ul>
+                                <li>
+                                    People ignoring the debate (like <span class="bold">Alice</span>) notice nothing til the flippening. Suddenly, potentially months of history get reorg’d and they end up on whichever fork now has a majority hashrate
+                                </li>
+                                <li>
+                                    BIP110 people (like <span class="bold">Bob</span>) celebrate their ultimate victory, if hashrate flipped in their favor, and URSF110 people (like <span class="bold">Carol</span>) end up on a minority fork
+                                </li>
+                                <li>
+                                    URSF110 people (like <span class="bold">Carol</span>) celebrate their ultimate victory, if hashrate flipped in their favor, and BIP110 people (like <span class="bold">Bob</span>) end up on a minority fork
+                                </li>
+                            </ul>
+                        `;
+                    }
+                    $( '.outcome_summary' ).innerHTML = html;
+                }
+                sliderChanged();
+
+                //prepare graphical depiction for whichever character is selected
+                var perspectiveChanged = () => {
+                    var p_option = $( '.char_btn_clicked' ).innerText.toLowerCase();
+                    var html = ``;
+                    // if ( p_option === "alice" ) {
+                    //     html = `
+                    //         <div class="character">
+                    //             <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Anime_girl_publicdomainq.png/250px-Anime_girl_publicdomainq.png' );"></div>
+                    //             <div class="character_nym bold">Alice</div>
+                    //             <div class="character_bio">Alice's bitcoin node <span class="bold">ignores</span> the BIP110 soft fork</div>
+                    //         </div>
+                    //     `;
+                    // }
+                    // if ( p_option === "bob" ) {
+                    //     html = `
+                    //         <div class="character">
+                    //             <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/El_Sato_Manga_kid_head_%281%29.svg/250px-El_Sato_Manga_kid_head_%281%29.svg.png' );"></div>
+                    //             <div class="character_nym bold">Bob</div>
+                    //             <div class="character_bio">Bob's bitcoin node <span class="bold">enforces</span> the BIP110 soft fork</div>
+                    //         </div>
+                    //     `;
+                    // }
+                    // if ( p_option === "carol" ) {
+                    //     html = `
+                    //         <div class="character">
+                    //             <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Anime_girl_portrait.jpg/250px-Anime_girl_portrait.jpg' );"></div>
+                    //             <div class="character_nym bold">Carol</div>
+                    //             <div class="character_bio">Carol's bitcoin node <span class="bold">rejects</span> the BIP110 soft fork</div>
+                    //         </div>
+                    //     `;
+                    // }
+                    html = html + `
+                        <div class="blockchain_div"><h2>Blockchain</h2><div class="blockchain"></div></div>
+                    `;
+                    $( '.graphical_depiction' ).innerHTML = html;
+                }
+                $$( '.char_btn' ).forEach( item => item.onclick = e => {
+                    $$( '.char_btn_clicked' ).forEach( btn => btn.classList.remove( "char_btn_clicked" ) );
+                    e.target.classList.add( "char_btn_clicked" );
+                    perspectiveChanged();
+                    forkalicious.displayBlockchain();
+                });
+                $( '.char_btn.alice' ).click();
+
+                //prepare to display changes to blockchain
+                $( '.make_block' ).onclick = () => {
+                    var value = Number( $( '.bip110_slider' ).value );
+                    var rand = Math.floor( Math.random() * 100 );
+                    if ( rand < value ) var blocktype = "pro_bip110";
+                    else var blocktype = "anti_bip110";
+                    var blocknum = blocktype === "pro_bip110" ? Object.keys( forkalicious.bip110_blocks ).length : Object.keys( forkalicious.ursf110_blocks ).length;
+                    if ( blocknum < forkalicious.length_in_sync ) {
+                        forkalicious.bip110_blocks[ blocknum ] = blocktype;
+                        forkalicious.ursf110_blocks[ blocknum ] = blocktype;
+                    } else {
+                        if ( blocktype === "pro_bip110" ) {
+                            forkalicious.bip110_blocks[ blocknum ] = blocktype;
+                        } else {
+                            forkalicious.ursf110_blocks[ blocknum ] = blocktype;
+                        }
+                    }
+                    forkalicious.displayBlockchain();
+                }
+                $( '.reset_chain' ).onclick = () => {
+                    forkalicious[ "bip110_blocks" ] = {}
+                    forkalicious[ "ursf110_blocks" ] = {}
+                    forkalicious.displayBlockchain();
+                }
+            </script>
+        </div>
+    </body>
+</html>
