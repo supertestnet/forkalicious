@@ -277,7 +277,7 @@
                         var html = `
                             <ul>
                                 <li>
-                                    People ignoring the debate (like <span class="bold">Alice</span>) notice nothing except perhaps these things: blocks could become noticeably slower for a while; inscriptions of the current type should stop entering the blockchain; a new format for inscriptions might come out so that they start working again; and some custom-made nunchuk wallets might get their money frozen if they use certain functions of miniscript.
+                                    People ignoring the debate (like <span class="bold">Alice</span>) notice nothing, except perhaps these things: blocks could become noticeably slower for a while; inscriptions of the current type should stop entering the blockchain; a new format for inscriptions might come out so that they start working again; and some custom-made nunchuk wallets might get their money frozen if they use certain functions of miniscript.
                                 </li>
                                 <li>
                                     BIP110 people (like <span class="bold">Bob</span>) celebrate their ultimate victory.
@@ -288,18 +288,18 @@
                             </ul>
                         `;
                     }
-                    if ( Object.keys( forkalicious.bip110_blocks ).length || Object.keys( forkalicious.ursf110_blocks ).length ) {
+                    if ( Object.keys( forkalicious.bip110_blocks ).length > 5 || Object.keys( forkalicious.ursf110_blocks ).length > 5 ) {
                         var html = `
                             <p>You discovered something tricky! If hashrate starts out *one way* in early August, but then *changes* to be *the other way* (this is called a "flippening"), we could see a significant wipeout of much blockchain history.
                             <ul>
                                 <li>
-                                    People ignoring the debate (like <span class="bold">Alice</span>) notice nothing til the flippening. Suddenly, potentially months of history get reorg’d and they end up on whichever fork now has a majority hashrate
+                                    People ignoring the debate (like <span class="bold">Alice</span>) notice nothing til the flippening. An unknown amount of time after that, potentially months of history get reorg’d, and they end up on whichever fork now has a majority hashrate.
                                 </li>
                                 <li>
-                                    BIP110 people (like <span class="bold">Bob</span>) celebrate their ultimate victory, if hashrate flipped in their favor, and URSF110 people (like <span class="bold">Carol</span>) end up on a minority fork
+                                    BIP110 people (like <span class="bold">Bob</span>) celebrate their ultimate victory, if hashrate flipped in their favor, and URSF110 people (like <span class="bold">Carol</span>) end up on a minority fork.
                                 </li>
                                 <li>
-                                    URSF110 people (like <span class="bold">Carol</span>) celebrate their ultimate victory, if hashrate flipped in their favor, and BIP110 people (like <span class="bold">Bob</span>) end up on a minority fork
+                                    URSF110 people (like <span class="bold">Carol</span>) celebrate their ultimate victory, if hashrate flipped in their favor, and BIP110 people (like <span class="bold">Bob</span>) end up on a minority fork.
                                 </li>
                             </ul>
                         `;
