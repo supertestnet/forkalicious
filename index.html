@@ -233,8 +233,8 @@
             <hr>
             <script>
                 //allow user to select hashrate
-                $( '.bip110_hashrate' ).innerText = '25';
-                $( '.bip110_slider' ).value = 25;
+                $( '.bip110_hashrate' ).innerText = '35';
+                $( '.bip110_slider' ).value = 35;
                 $( '.bip110_slider' ).oninput = () => {
                     var value = Number( $( '.bip110_slider' ).value );
                     $( '.bip110_hashrate' ).innerText = value;
@@ -290,7 +290,7 @@
                     }
                     if ( Object.keys( forkalicious.bip110_blocks ).length || Object.keys( forkalicious.ursf110_blocks ).length ) {
                         var html = `
-                            <p>You have discovered something tricky! If hashrate starts out *one way* in early August, but then *changes* to be *the other way* (this is called a "flippening"), we could see a significant wipeout of much blockchain history.
+                            <p>You discovered something tricky! If hashrate starts out *one way* in early August, but then *changes* to be *the other way* (this is called a "flippening"), we could see a significant wipeout of much blockchain history.
                             <ul>
                                 <li>
                                     People ignoring the debate (like <span class="bold">Alice</span>) notice nothing til the flippening. Suddenly, potentially months of history get reorg’d and they end up on whichever fork now has a majority hashrate
