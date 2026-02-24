@@ -140,7 +140,7 @@
                 transform: translateY( 2px );
                 box-shadow: 0 3px;
             }
-            .blockchain_div {
+            .graphical_depiction {
                 display: inline-block;
                 border: 1px solid black;
                 padding: 1rem;
@@ -223,7 +223,12 @@
             <p>Select a character to see things play out from their perspective:</p>
             <p><button class="char_btn alice">Alice</button><button class="char_btn bob">Bob</button><button class="char_btn carol">Carol</button></p>
             <p><button class="make_block">Generate block</button> <button class="reset_chain">Reset chain</button></p>
-            <div class="graphical_depiction"></div>
+            <div class="graphical_depiction">
+                <h2>Blockchain</h2>
+                <p>Red blocks = anti-BIP110</p>
+                <p>Green blocks = pro-BIP110</p>
+                <div class="blockchain"></div>
+            </div>
             <hr>
             <script>
                 //allow user to select hashrate
@@ -303,45 +308,9 @@
                 sliderChanged();
 
                 //prepare graphical depiction for whichever character is selected
-                var perspectiveChanged = () => {
-                    var p_option = $( '.char_btn_clicked' ).innerText.toLowerCase();
-                    var html = ``;
-                    // if ( p_option === "alice" ) {
-                    //     html = `
-                    //         <div class="character">
-                    //             <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Anime_girl_publicdomainq.png/250px-Anime_girl_publicdomainq.png' );"></div>
-                    //             <div class="character_nym bold">Alice</div>
-                    //             <div class="character_bio">Alice's bitcoin node <span class="bold">ignores</span> the BIP110 soft fork</div>
-                    //         </div>
-                    //     `;
-                    // }
-                    // if ( p_option === "bob" ) {
-                    //     html = `
-                    //         <div class="character">
-                    //             <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/El_Sato_Manga_kid_head_%281%29.svg/250px-El_Sato_Manga_kid_head_%281%29.svg.png' );"></div>
-                    //             <div class="character_nym bold">Bob</div>
-                    //             <div class="character_bio">Bob's bitcoin node <span class="bold">enforces</span> the BIP110 soft fork</div>
-                    //         </div>
-                    //     `;
-                    // }
-                    // if ( p_option === "carol" ) {
-                    //     html = `
-                    //         <div class="character">
-                    //             <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Anime_girl_portrait.jpg/250px-Anime_girl_portrait.jpg' );"></div>
-                    //             <div class="character_nym bold">Carol</div>
-                    //             <div class="character_bio">Carol's bitcoin node <span class="bold">rejects</span> the BIP110 soft fork</div>
-                    //         </div>
-                    //     `;
-                    // }
-                    html = html + `
-                        <div class="blockchain_div"><h2>Blockchain</h2><div class="blockchain"></div></div>
-                    `;
-                    $( '.graphical_depiction' ).innerHTML = html;
-                }
                 $$( '.char_btn' ).forEach( item => item.onclick = e => {
                     $$( '.char_btn_clicked' ).forEach( btn => btn.classList.remove( "char_btn_clicked" ) );
                     e.target.classList.add( "char_btn_clicked" );
-                    perspectiveChanged();
                     forkalicious.displayBlockchain();
                 });
                 $( '.char_btn.alice' ).click();
