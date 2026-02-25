@@ -247,17 +247,17 @@
             <div class="character">
                 <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Anime_girl_publicdomainq.png/250px-Anime_girl_publicdomainq.png' );"></div>
                 <div class="character_nym bold">Alice</div>
-                <div class="character_bio">Alice's bitcoin node <span class="bold">ignores</span> the BIP110 soft fork</div>
+                <div class="character_bio">Her bitcoin node <span class="bold">ignores</span> the BIP110 soft fork</div>
             </div>
             <div class="character">
                 <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/El_Sato_Manga_kid_head_%281%29.svg/250px-El_Sato_Manga_kid_head_%281%29.svg.png' );"></div>
                 <div class="character_nym bold">Bob</div>
-                <div class="character_bio">Bob's bitcoin node <span class="bold">enforces</span> the BIP110 soft fork</div>
+                <div class="character_bio">His bitcoin node <span class="bold">enforces</span> the BIP110 soft fork</div>
             </div>
             <div class="character">
                 <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Anime_girl_portrait.jpg/250px-Anime_girl_portrait.jpg' );"></div>
                 <div class="character_nym bold">Carol</div>
-                <div class="character_bio">Carol's bitcoin node <span class="bold">rejects</span> the BIP110 soft fork (but see <span class="link carol_note">this note</span>)</div>
+                <div class="character_bio">Her bitcoin node <span class="bold">rejects</span> the BIP110 soft fork (but see <span class="link carol_note">this note</span>)</div>
             </div>
         </div>
         <hr>
@@ -404,7 +404,7 @@
             $( '.carol_note' ).onclick = () => {
                 var html = `
                     <p>
-                        This demo simplifies the logic that controls Carol's node. Her simplified node rejects the first pro-BIP110 block in BIP110's mandatory signaling period.
+                        This demo simplifies the logic of Carol's node. Her simplified node rejects the first pro-BIP110 block in BIP110's mandatory signaling period.
                     </p>
                     <p>
                         In a real implementation (such as the proof of concept <a href="https://github.com/supertestnet/ursf-110" target="_blank">here</a>), a URSF110 node only rejects pro-BIP110 blocks if those blocks are about to become 55% of the blocks in a signaling period. As a result, there could be over a thousand pro-BIP110 blocks in a signaling period before Carol's node would reject one.
