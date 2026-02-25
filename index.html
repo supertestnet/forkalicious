@@ -38,7 +38,7 @@
                         blocks.push( div );
                     });
                     $( '.blockchain' ).innerHTML = ``;
-                    blocks.forEach( div => $( '.blockchain' ).append( div ) );
+                    blocks.forEach( div => $( '.blockchain' ).prepend( div ) );
                 },
             }
         </script>
@@ -166,9 +166,62 @@
                 text-align: center;
                 font-size: 80%;
             }
+            .link {
+                color: blue;
+                text-decoration: underline;
+                cursor: pointer;
+            }
             @media screen and (max-width: 600px) {
             }
         </style>
+        <style>
+            .black-bg {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                background-color: black;
+                opacity: .5;
+                width: 100vw;
+                height: 100vh;
+            }
+            .modal {
+                position: fixed;
+                box-sizing: border-box;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+                width: 90%;
+                max-width: 560px;
+                background-color: white;
+                border-radius: 1rem;
+                padding: 20px;
+                color: black;
+                text-align: center;
+                word-wrap: break-word;
+            }
+            .modal * {
+                color: black;
+            }
+            .modal input, .modal textarea {
+                max-width: 90%;
+            }
+            .hidden {
+                display: none !important;
+            }
+        </style>
+        <script>
+            var modalVanish = () => {
+                $( ".black-bg" ).classList.add( "hidden" );
+                $( ".modal" ).classList.add( "hidden" );
+            }
+            var showModal = content => {
+                $( ".modal" ).innerHTML = `<div class="x_modal" style="position: absolute;right: 1rem;top: 0.5rem;font-size: 2rem; cursor: pointer; color: black;" onclick="modalVanish()">&times;</div>`;
+                $( ".modal" ).innerHTML += `<div style="overflow-y: auto; max-height: 80vh; margin-top: 1.5rem;">${content}</div>`;
+                $( ".black-bg" ).classList.remove( "hidden" );
+                $( ".modal" ).classList.remove( "hidden" );
+            }
+        </script>
         <script>
             var $ = document.querySelector.bind( document );
             var $$ = document.querySelectorAll.bind( document );
@@ -186,161 +239,183 @@
         </script>
     </head>
     <body>
-        <div class="home_page">
-            <h1>Forkalicious</h1>
-            <p>Visualize possible outcomes of a contentious BIP110 soft fork</p>
-            <hr>
-            <h2>Characters</h2>
-            <div class="characters">
-                <div class="character">
-                    <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Anime_girl_publicdomainq.png/250px-Anime_girl_publicdomainq.png' );"></div>
-                    <div class="character_nym bold">Alice</div>
-                    <div class="character_bio">Alice's bitcoin node <span class="bold">ignores</span> the BIP110 soft fork</div>
-                </div>
-                <div class="character">
-                    <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/El_Sato_Manga_kid_head_%281%29.svg/250px-El_Sato_Manga_kid_head_%281%29.svg.png' );"></div>
-                    <div class="character_nym bold">Bob</div>
-                    <div class="character_bio">Bob's bitcoin node <span class="bold">enforces</span> the BIP110 soft fork</div>
-                </div>
-                <div class="character">
-                    <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Anime_girl_portrait.jpg/250px-Anime_girl_portrait.jpg' );"></div>
-                    <div class="character_nym bold">Carol</div>
-                    <div class="character_bio">Carol's bitcoin node <span class="bold">rejects</span> the BIP110 soft fork</div>
-                </div>
+        <h1>Forkalicious</h1>
+        <p>Visualize possible outcomes of a contentious BIP110 soft fork</p>
+        <hr>
+        <h2>Characters</h2>
+        <div class="characters">
+            <div class="character">
+                <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Anime_girl_publicdomainq.png/250px-Anime_girl_publicdomainq.png' );"></div>
+                <div class="character_nym bold">Alice</div>
+                <div class="character_bio">Alice's bitcoin node <span class="bold">ignores</span> the BIP110 soft fork</div>
             </div>
-            <hr>
-            <h2>Scenario</h2>
-            <div class="scenario">
-                <p>Please set the BIP110 hashrate:</p>
-                <p>BIP110 hashrate: <span class="bip110_hashrate">0</span>%</p>
-                <input class="bip110_slider" type="range" min="0" max="100" value="50">
+            <div class="character">
+                <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/El_Sato_Manga_kid_head_%281%29.svg/250px-El_Sato_Manga_kid_head_%281%29.svg.png' );"></div>
+                <div class="character_nym bold">Bob</div>
+                <div class="character_bio">Bob's bitcoin node <span class="bold">enforces</span> the BIP110 soft fork</div>
             </div>
-            <hr>
-            <h2>Outcome summary</h2>
-            <div class="outcome_summary"></div>
-            <hr>
-            <h2>Graphical depiction</h2>
-            <p>Assume we begin 5 blocks before blockheight 961,632 -- which is the first block of the "mandatory signaling period" for BIP110, and which is expected in early August</p>
-            <p>Select a character to see things play out from their perspective:</p>
-            <p><button class="char_btn alice">Alice</button><button class="char_btn bob">Bob</button><button class="char_btn carol">Carol</button></p>
-            <p><button class="make_block">Generate block</button> <button class="reset_chain">Reset chain</button></p>
-            <div class="graphical_depiction">
-                <h2>Blockchain</h2>
-                <p>Anti-BIP110 blocks are red (total:&nbsp;<span class="anti_length">0</span>)</p>
-                <p>Pro-BIP110 blocks are green (total:&nbsp;<span class="pro_length">0</span>)</p>
-                <div class="blockchain"></div>
+            <div class="character">
+                <div class="character_img" style="background-image: url( 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Anime_girl_portrait.jpg/250px-Anime_girl_portrait.jpg' );"></div>
+                <div class="character_nym bold">Carol</div>
+                <div class="character_bio">Carol's bitcoin node <span class="bold">rejects</span> the BIP110 soft fork (but see <span class="link carol_note">this note</span>)</div>
             </div>
-            <hr>
-            <script>
-                //allow user to select hashrate
-                $( '.bip110_hashrate' ).innerText = '35';
-                $( '.bip110_slider' ).value = 35;
-                $( '.bip110_slider' ).oninput = () => {
-                    var value = Number( $( '.bip110_slider' ).value );
-                    $( '.bip110_hashrate' ).innerText = value;
-                    sliderChanged();
-                }
-
-                //prepare summary for whichever scenario is selected
-                var sliderChanged = () => {
-                    var value = $( '.bip110_slider' ).value;
-                    var html = ``;
-                    if ( value >= 40 && value < 60 ) {
-                        var html = `
-                            <ul>
-                                <li>
-                                    People ignoring the debate (like <span class="bold">Alice</span>) notice that blocks become noticeably slower for a while, and large chain reorgs happen until the dust settles one way or the other. Bitcoin's blockchain becomes unpredictable, and its value in the market might fall as a result.
-                                </li>
-                                <li>
-                                    BIP110 people (like <span class="bold">Bob</span>) try to convince more miners to join their side so that they ultimately "win," become the true bitcoin blockchain, and don't end up on a minority fork
-                                </li>
-                                <li>
-                                    URSF110 people (like <span class="bold">Carol</span>) try to convince more miners to join their side so that they ultimately "win," become the true bitcoin blockchain, and don't end up on a minority fork
-                                </li>
-                            </ul>
-                        `;
-                    } else if ( value < 40 ) {
-                        var html = `
-                            <ul>
-                                <li>
-                                    People ignoring the debate (like <span class="bold">Alice</span>) notice nothing, except that blocks could become noticeably slower for a while.
-                                </li>
-                                <li>
-                                    BIP110 people (like <span class="bold">Bob</span>) end up on a minority fork.
-                                </li>
-                                <li>
-                                    URSF110 people (like <span class="bold">Carol</span>) celebrate their ultimate victory (but otherwise notice nothing).
-                                </li>
-                            </ul>
-                        `;
-                    } else if ( value >= 60 ) {
-                        var html = `
-                            <ul>
-                                <li>
-                                    People ignoring the debate (like <span class="bold">Alice</span>) notice nothing, except perhaps these things: blocks could become noticeably slower for a while; inscriptions of the current type should stop entering the blockchain; a new format for inscriptions might come out so that they start working again; and some custom-made nunchuk wallets might get their money frozen if they use certain functions of miniscript.
-                                </li>
-                                <li>
-                                    BIP110 people (like <span class="bold">Bob</span>) celebrate their ultimate victory.
-                                </li>
-                                <li>
-                                    URSF110 people (like <span class="bold">Carol</span>) end up on a minority fork.
-                                </li>
-                            </ul>
-                        `;
-                    }
-                    if ( Object.keys( forkalicious.bip110_blocks ).length > 5 || Object.keys( forkalicious.ursf110_blocks ).length > 5 ) {
-                        var html = `
-                            <p>You discovered something tricky! If hashrate starts out *one way* in early August, but then *changes* to be *the other way* (this is called a "flippening"), we could see a significant wipeout of much blockchain history.
-                            <ul>
-                                <li>
-                                    People ignoring the debate (like <span class="bold">Alice</span>) notice nothing til the flippening. An unknown amount of time after that, potentially months of history get reorg’d, and they end up on whichever fork now has a majority hashrate.
-                                </li>
-                                <li>
-                                    BIP110 people (like <span class="bold">Bob</span>) celebrate their ultimate victory, if hashrate flipped in their favor, and URSF110 people (like <span class="bold">Carol</span>) end up on a minority fork.
-                                </li>
-                                <li>
-                                    URSF110 people (like <span class="bold">Carol</span>) celebrate their ultimate victory, if hashrate flipped in their favor, and BIP110 people (like <span class="bold">Bob</span>) end up on a minority fork.
-                                </li>
-                            </ul>
-                        `;
-                    }
-                    $( '.outcome_summary' ).innerHTML = html;
-                }
-                sliderChanged();
-
-                //prepare graphical depiction for whichever character is selected
-                $$( '.char_btn' ).forEach( item => item.onclick = e => {
-                    $$( '.char_btn_clicked' ).forEach( btn => btn.classList.remove( "char_btn_clicked" ) );
-                    e.target.classList.add( "char_btn_clicked" );
-                    forkalicious.displayBlockchain();
-                });
-                $( '.char_btn.alice' ).click();
-
-                //prepare to display changes to blockchain
-                $( '.make_block' ).onclick = () => {
-                    var value = Number( $( '.bip110_slider' ).value );
-                    var rand = Math.floor( Math.random() * 100 );
-                    if ( rand < value ) var blocktype = "pro_bip110";
-                    else var blocktype = "anti_bip110";
-                    var blocknum = blocktype === "pro_bip110" ? Object.keys( forkalicious.bip110_blocks ).length : Object.keys( forkalicious.ursf110_blocks ).length;
-                    if ( blocknum < forkalicious.length_in_sync ) {
-                        forkalicious.bip110_blocks[ blocknum ] = blocktype;
-                        forkalicious.ursf110_blocks[ blocknum ] = blocktype;
-                    } else {
-                        if ( blocktype === "pro_bip110" ) {
-                            forkalicious.bip110_blocks[ blocknum ] = blocktype;
-                        } else {
-                            forkalicious.ursf110_blocks[ blocknum ] = blocktype;
-                        }
-                    }
-                    forkalicious.displayBlockchain();
-                }
-                $( '.reset_chain' ).onclick = () => {
-                    forkalicious[ "bip110_blocks" ] = {}
-                    forkalicious[ "ursf110_blocks" ] = {}
-                    forkalicious.displayBlockchain();
-                }
-            </script>
         </div>
+        <hr>
+        <h2>Scenario</h2>
+        <div class="scenario">
+            <p>Please set the BIP110 hashrate:</p>
+            <p>BIP110 hashrate: <span class="bip110_hashrate">0</span>%</p>
+            <input class="bip110_slider" type="range" min="0" max="100" value="50">
+        </div>
+        <hr>
+        <h2>Outcome summary</h2>
+        <div class="outcome_summary"></div>
+        <hr>
+        <h2>Graphical depiction</h2>
+        <p>Assume we begin 5 blocks before blockheight 961,632 -- which is the first block of the "mandatory signaling period" for BIP110, and which is expected in early August</p>
+        <p>Select a character to see things play out from their perspective:</p>
+        <p><button class="char_btn alice">Alice</button><button class="char_btn bob">Bob</button><button class="char_btn carol">Carol</button></p>
+        <p><button class="make_block">Generate block</button> <button class="reset_chain">Reset chain</button></p>
+        <div class="graphical_depiction">
+            <h2>Blockchain</h2>
+            <p>Anti-BIP110 blocks are red; pro-BIP110 blocks are green</p>
+            <p>Total blocks in each chain: <span class="bold">Anti-BIP110</span> <span class="anti_length">0</span> | <span class="bold">Pro-BIP110</span> <span class="pro_length">0</span></p>
+            <p>Status: <span class="chain_status">not yet forked</span></p>
+            <div class="blockchain"></div>
+        </div>
+        <hr>
+        <script>
+            //allow user to select hashrate
+            $( '.bip110_hashrate' ).innerText = '35';
+            $( '.bip110_slider' ).value = 35;
+            $( '.bip110_slider' ).oninput = () => {
+                var value = Number( $( '.bip110_slider' ).value );
+                $( '.bip110_hashrate' ).innerText = value;
+                sliderChanged();
+            }
+
+            //prepare summary for whichever scenario is selected
+            var sliderChanged = () => {
+                var value = $( '.bip110_slider' ).value;
+                var html = ``;
+                if ( value >= 40 && value < 60 ) {
+                    var html = `
+                        <ul>
+                            <li>
+                                People ignoring the debate (like <span class="bold">Alice</span>) notice that blocks become noticeably slower for a while, and large chain reorgs happen until the dust settles one way or the other. Bitcoin's blockchain becomes unpredictable, and its value in the market might fall as a result.
+                            </li>
+                            <li>
+                                BIP110 people (like <span class="bold">Bob</span>) try to convince more miners to join their side so that they ultimately "win," become the true bitcoin blockchain, and don't end up on a minority fork
+                            </li>
+                            <li>
+                                URSF110 people (like <span class="bold">Carol</span>) try to convince more miners to join their side so that they ultimately "win," become the true bitcoin blockchain, and don't end up on a minority fork
+                            </li>
+                        </ul>
+                    `;
+                } else if ( value < 40 ) {
+                    var html = `
+                        <ul>
+                            <li>
+                                People ignoring the debate (like <span class="bold">Alice</span>) notice nothing, except that blocks could become noticeably slower for a while.
+                            </li>
+                            <li>
+                                BIP110 people (like <span class="bold">Bob</span>) end up on a minority fork.
+                            </li>
+                            <li>
+                                URSF110 people (like <span class="bold">Carol</span>) celebrate their ultimate victory (but otherwise notice nothing).
+                            </li>
+                        </ul>
+                    `;
+                } else if ( value >= 60 ) {
+                    var html = `
+                        <ul>
+                            <li>
+                                People ignoring the debate (like <span class="bold">Alice</span>) notice nothing, except perhaps these things: blocks could become noticeably slower for a while; inscriptions of the current type should stop entering the blockchain; a new format for inscriptions might come out so that they start working again; and some custom-made nunchuk wallets might get their money frozen if they use certain functions of miniscript.
+                            </li>
+                            <li>
+                                BIP110 people (like <span class="bold">Bob</span>) celebrate their ultimate victory.
+                            </li>
+                            <li>
+                                URSF110 people (like <span class="bold">Carol</span>) end up on a minority fork.
+                            </li>
+                        </ul>
+                    `;
+                }
+                if ( Object.keys( forkalicious.bip110_blocks ).length > 5 || Object.keys( forkalicious.ursf110_blocks ).length > 5 ) {
+                    var html = `
+                        <p>You discovered something tricky! If hashrate starts out *one way* in early August, but then *changes* to be *the other way* (this is called a "flippening"), we could see a significant wipeout of much blockchain history.
+                        <ul>
+                            <li>
+                                People ignoring the debate (like <span class="bold">Alice</span>) notice nothing til the flippening. An unknown amount of time after that, potentially months of history get reorg’d, and they end up on whichever fork now has a majority hashrate.
+                            </li>
+                            <li>
+                                BIP110 people (like <span class="bold">Bob</span>) celebrate their ultimate victory, if hashrate flipped in their favor, and URSF110 people (like <span class="bold">Carol</span>) end up on a minority fork.
+                            </li>
+                            <li>
+                                URSF110 people (like <span class="bold">Carol</span>) celebrate their ultimate victory, if hashrate flipped in their favor, and BIP110 people (like <span class="bold">Bob</span>) end up on a minority fork.
+                            </li>
+                        </ul>
+                    `;
+                }
+                $( '.outcome_summary' ).innerHTML = html;
+            }
+            sliderChanged();
+
+            //prepare graphical depiction for whichever character is selected
+            $$( '.char_btn' ).forEach( item => item.onclick = e => {
+                $$( '.char_btn_clicked' ).forEach( btn => btn.classList.remove( "char_btn_clicked" ) );
+                e.target.classList.add( "char_btn_clicked" );
+                forkalicious.displayBlockchain();
+            });
+            $( '.char_btn.alice' ).click();
+
+            //prepare to display changes to blockchain
+            $( '.make_block' ).onclick = () => {
+                var value = Number( $( '.bip110_slider' ).value );
+                var rand = Math.floor( Math.random() * 100 );
+                if ( rand < value ) var blocktype = "pro_bip110";
+                else var blocktype = "anti_bip110";
+                var blocknum = blocktype === "pro_bip110" ? Object.keys( forkalicious.bip110_blocks ).length : Object.keys( forkalicious.ursf110_blocks ).length;
+                if ( blocknum < forkalicious.length_in_sync ) {
+                    forkalicious.bip110_blocks[ blocknum ] = blocktype;
+                    forkalicious.ursf110_blocks[ blocknum ] = blocktype;
+                } else {
+                    if ( blocktype === "pro_bip110" ) {
+                        forkalicious.bip110_blocks[ blocknum ] = blocktype;
+                    } else {
+                        forkalicious.ursf110_blocks[ blocknum ] = blocktype;
+                    }
+                }
+                if ( Object.keys( forkalicious.bip110_blocks ).length > 5 || Object.keys( forkalicious.ursf110_blocks ).length > 5 ) {
+                    $( '.chain_status' ).innerText = "forked!";
+                    $( '.chain_status' ).classList.add( "bold" );
+                }
+                forkalicious.displayBlockchain();
+            }
+            $( '.reset_chain' ).onclick = () => {
+                forkalicious[ "bip110_blocks" ] = {}
+                forkalicious[ "ursf110_blocks" ] = {}
+                $( '.chain_status' ).classList.remove( "bold" );
+                $( '.chain_status' ).innerText = "not yet forked";
+                forkalicious.displayBlockchain();
+            }
+
+            $( '.carol_note' ).onclick = () => {
+                var html = `
+                    <p>
+                        This demo simplifies the logic that controls Carol's node. Her simplified node rejects the first pro-BIP110 block in BIP110's mandatory signaling period.
+                    </p>
+                    <p>
+                        In a real implementation (such as the proof of concept <a href="https://github.com/supertestnet/ursf-110" target="_blank">here</a>), a URSF110 node only rejects pro-BIP110 blocks if those blocks are about to become 55% of the blocks in a signaling period. As a result, there could be over a thousand pro-BIP110 blocks in a signaling period before Carol's node would reject one.
+                    </p>
+                    <p>
+                        I deemed a 1000+ block waiting period too annoying to demo, so I simplified to immediately reject the first. I think this simplification is justified because it makes the demo quicker and Carol's node would *eventually* reject pro-BIP110 blocks in this period, just later than the simplified version does.
+                    </p>
+                `;
+                showModal( html );
+            }
+        </script>
+        <div class="black-bg hidden" onclick="modalVanish();"></div>
+        <div class="modal hidden"></div>
     </body>
 </html>
