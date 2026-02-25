@@ -410,7 +410,7 @@
                         In a real implementation (such as the proof of concept <a href="https://github.com/supertestnet/ursf-110" target="_blank">here</a>), a URSF110 node only rejects pro-BIP110 blocks if those blocks are about to become 55% of the blocks in a signaling period. As a result, there could be over a thousand pro-BIP110 blocks in a signaling period before Carol's node would reject one.
                     </p>
                     <p>
-                        I deemed a 1000+ block waiting period too annoying to demo, so I simplified to immediately reject the first. I think this simplification is justified because it makes the demo quicker and Carol's node would *eventually* reject pro-BIP110 blocks in this period, just later than the simplified version does.
+                        I deemed a 1000+ block waiting period too annoying to demo, so I simplified Carol's node to reject pro-BIP110 blocks almost immediately. I think this simplification is justified because it makes the demo quicker and Carol's node would *eventually* reject pro-BIP110 blocks in this period, just later than the simplified version does.
                     </p>
                 `;
                 showModal( html );
