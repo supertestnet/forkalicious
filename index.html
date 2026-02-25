@@ -11,6 +11,13 @@
                 prefix_to_use: !!Math.floor( Math.random() * 2 ) ? "bip110" : "ursf110",
                 bip110_blocks: {},
                 ursf110_blocks: {},
+                stop: false,
+                autoMake: async () => {
+                    if ( forkalicious.stop ) return;
+                    $( '.make_block' ).click();
+                    await forkalicious.waitSomeTime( 100 );
+                    forkalicious.autoMake();
+                },
                 displayBlockchain: () => {
                     $( '.pro_length' ).innerText = Object.keys( forkalicious.bip110_blocks ).length;
                     $( '.anti_length' ).innerText = Object.keys( forkalicious.ursf110_blocks ).length;
@@ -139,6 +146,9 @@
             .char_btn_clicked {
                 transform: translateY( 2px );
                 box-shadow: 0 3px;
+            }
+            .ctrl_btn {
+                margin-top: .5rem;
             }
             .graphical_depiction {
                 display: inline-block;
@@ -276,7 +286,7 @@
         <p class="bold">Pick a character</p>
         <p>See things play out from their perspective</p>
         <p><button class="char_btn alice">Alice</button><button class="char_btn bob">Bob</button><button class="char_btn carol">Carol</button></p>
-        <p><button class="make_block">Generate block</button> <button class="reset_chain">Reset chain</button></p>
+        <p><button class="ctrl_btn make_block">Generate block</button> <button class="ctrl_btn reset_chain">Reset chain</button> <button class="ctrl_btn auto_make">Auto-generate blocks</button> <button class="ctrl_btn stop_btn" disabled="true">Stop</button></p>
         <div class="graphical_depiction">
             <h2>Blockchain</h2>
             <p>Anti-BIP110 blocks are red; pro-BIP110 blocks are green</p>
@@ -400,7 +410,17 @@
                 $( '.chain_status' ).innerText = "not yet forked";
                 forkalicious.displayBlockchain();
             }
+            $( '.auto_make' ).onclick = () => {
+                forkalicious.stop = false;
+                $( '.stop_btn' ).disabled = false;
+                forkalicious.autoMake();
+            }
+            $( '.stop_btn' ).onclick = () => {
+                forkalicious.stop = true;
+                $( '.stop_btn' ).disabled = true;
+            }
 
+            //make Carol's note show a modal
             $( '.carol_note' ).onclick = () => {
                 var html = `
                     <p>
