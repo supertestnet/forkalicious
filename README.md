@@ -7,6 +7,9 @@ This is a "fork visualizer." It helps you see what the possible outcomes might b
 # How can I try it?
 Just click here: https://supertestnet.github.io/forkalicious/
 
+# Video demo
+[![](https://supertestnet.github.io/forkalicious/forkalicious-thumbnail.png)](https://www.youtube.com/watch?v=-EZWv08niJE)
+
 # How does it work?
 The website creates three characters, Alice, Bob, and Carol. Alice runs a "standard" bitcoin node that **ignores** the BIP110 soft fork. Bob runs a node that **enforces** the BIP110 soft fork. Carol runs a node that **rejects** the BIP110 soft fork. (These nodes are all simulated, not real.) Then it lets you pick how many miners enforce the rules of BIP110, from 0% to 100%. Then you can start generating blocks based on that assumption, and see how the blockchain looks on Alice's node, Bob's node, and Carol's node.
 
